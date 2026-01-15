@@ -364,8 +364,21 @@ body {
 
 /* Loading State */
 .loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 2rem;
+    background: var(--bg-light);
+    border: 2px solid var(--border);
+    border-radius: 1rem;
+    z-index: 1000;
+    display: none;
+}
+
+.loading.show {
+    display: block;
 }
 
 .spinner {

@@ -323,19 +323,20 @@ function updateLastUpdated(timestamp) {
  * Show loading state
  */
 function showLoading() {
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('error').style.display = 'none';
-    
-    document.querySelectorAll('.view').forEach(view => {
-        view.classList.remove('active');
-    });
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) {
+        loadingEl.classList.add('show');
+    }
 }
 
 /**
  * Hide loading state
  */
 function hideLoading() {
-    document.getElementById('loading').style.display = 'none';
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) {
+        loadingEl.classList.remove('show');
+    }
 }
 
 /**
@@ -362,12 +363,15 @@ async function switchView(viewName) {
         }
     });
     
-    // Hide all views
+    // Hide error
+    document.getElementById('error').style.display = 'none';
+    
+    // Hide all views first
     document.querySelectorAll('.view').forEach(view => {
         view.classList.remove('active');
     });
     
-    // Show selected view
+    // Show selected view immediately (before loading)
     const targetView = document.getElementById(`${viewName}-view`);
     if (targetView) {
         targetView.classList.add('active');
@@ -380,12 +384,12 @@ async function switchView(viewName) {
         switch(viewName) {
             case 'standings':
                 const standingsData = await loadStandings();
-                const selectedWeek = document.getElementById('standings-week-select').value || 'current';
+                const selectedWeek = document.getElementById('standings-week-select')?.value || 'current';
                 renderStandings(standingsData, selectedWeek);
                 break;
                 
             case 'weekly':
-                const currentWeek = document.getElementById('week-select').value;
+                const currentWeek = document.getElementById('week-select')?.value || '1';
                 const weeklyData = await loadWeeklyResults(currentWeek);
                 renderWeeklyResults(weeklyData);
                 break;
@@ -405,7 +409,7 @@ async function switchView(viewName) {
         
     } catch (error) {
         console.error('Error loading view:', error);
-        showError('❌ Failed to load data. Please try again later.');
+        showError('❌ Failed to load data. Please check your API configuration and try again.');
     }
 }
 
