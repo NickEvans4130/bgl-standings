@@ -71,6 +71,37 @@ body {
     color: var(--text-dim);
 }
 
+.season-status {
+    margin: 1.5rem 0 1rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 0.75rem;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.season-status.prep {
+    background: linear-gradient(135deg, var(--warning) 0%, #fb923c 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.season-status.comp {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.season-status.ended {
+    background: linear-gradient(135deg, var(--bg-lighter) 0%, var(--bg-light) 100%);
+    box-shadow: none;
+}
+
+.season-status .emoji {
+    margin-right: 0.5rem;
+}
+
 /* Navigation */
 .nav {
     display: flex;

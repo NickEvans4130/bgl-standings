@@ -12,7 +12,41 @@ const CONFIG = {
     CACHE_DURATION: 5 * 60 * 1000,
     
     // League settings
-    TOTAL_WEEKS: 4
+    TOTAL_WEEKS: 4,
+    
+    // Season 1 Schedule
+    SEASON_SCHEDULE: {
+        registrationClose: new Date('2026-01-18T23:59:59'),
+        qualifiersOpen: new Date('2026-01-18T00:00:00'),
+        qualifiersClose: new Date('2026-01-24T23:59:59'),
+        
+        weeks: [
+            {
+                week: 1,
+                prepStart: new Date('2026-01-25T00:00:00'),
+                compStart: new Date('2026-02-01T00:00:00'),
+                compEnd: new Date('2026-02-07T23:59:59')
+            },
+            {
+                week: 2,
+                prepStart: new Date('2026-02-08T00:00:00'),
+                compStart: new Date('2026-02-15T00:00:00'),
+                compEnd: new Date('2026-02-21T23:59:59')
+            },
+            {
+                week: 3,
+                prepStart: new Date('2026-02-22T00:00:00'),
+                compStart: new Date('2026-03-01T00:00:00'),
+                compEnd: new Date('2026-03-07T23:59:59')
+            },
+            {
+                week: 4,
+                prepStart: new Date('2026-03-08T00:00:00'),
+                compStart: new Date('2026-03-15T00:00:00'),
+                compEnd: new Date('2026-03-21T23:59:59')
+            }
+        ]
+    }
 };
 
 // ============================================================================
@@ -315,6 +349,84 @@ function updateLastUpdated(timestamp) {
     element.textContent = text;
 }
 
+/**
+ * Get current season status
+ */
+function getSeasonStatus() {
+    const now = new Date();
+    const schedule = CONFIG.SEASON_SCHEDULE;
+    
+    // Check if qualifiers
+    if (now >= schedule.qualifiersOpen && now <= schedule.qualifiersClose) {
+        return {
+            phase: 'qualifiers',
+            emoji: '🎯',
+            text: 'Qualifier Seeds Open',
+            description: `Play qualifier seeds until ${schedule.qualifiersClose.toLocaleDateString()}`
+        };
+    }
+    
+    // Check each competition week
+    for (const weekData of schedule.weeks) {
+        // Prep week
+        if (now >= weekData.prepStart && now < weekData.compStart) {
+            return {
+                phase: 'prep',
+                emoji: '📝',
+                text: `Prep Week ${weekData.week}`,
+                description: `Competition starts ${weekData.compStart.toLocaleDateString()}`
+            };
+        }
+        
+        // Comp week
+        if (now >= weekData.compStart && now <= weekData.compEnd) {
+            return {
+                phase: 'comp',
+                emoji: '🏆',
+                text: `Competition Week ${weekData.week} - LIVE`,
+                description: `Ends ${weekData.compEnd.toLocaleDateString()}`
+            };
+        }
+    }
+    
+    // Check if season ended
+    const lastWeek = schedule.weeks[schedule.weeks.length - 1];
+    if (now > lastWeek.compEnd) {
+        return {
+            phase: 'ended',
+            emoji: '✅',
+            text: 'Season 1 Complete',
+            description: 'Thanks for participating!'
+        };
+    }
+    
+    // Before season starts
+    return {
+        phase: 'upcoming',
+        emoji: '📅',
+        text: 'Season Starting Soon',
+        description: `Qualifiers open ${schedule.qualifiersOpen.toLocaleDateString()}`
+    };
+}
+
+/**
+ * Update season status banner
+ */
+function updateSeasonStatus() {
+    const statusEl = document.getElementById('season-status');
+    if (!statusEl) return;
+    
+    const status = getSeasonStatus();
+    
+    statusEl.className = `season-status ${status.phase}`;
+    statusEl.innerHTML = `
+        <span class="emoji">${status.emoji}</span>
+        <span>${status.text}</span>
+    `;
+    
+    statusEl.title = status.description;
+}
+
 // ============================================================================
 // VIEW MANAGEMENT
 // ============================================================================
@@ -469,6 +581,12 @@ async function init() {
         showError('⚠️ API not configured. Please update CONFIG.API_BASE_URL in app.js');
         return;
     }
+    
+    // Update season status
+    updateSeasonStatus();
+    
+    // Update status every minute
+    setInterval(updateSeasonStatus, 60 * 1000);
     
     // Set up event listeners
     initEventListeners();
