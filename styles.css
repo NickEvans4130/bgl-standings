@@ -141,6 +141,14 @@ body {
     font-size: 1.1rem;
 }
 
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
 .week-selector {
     margin-top: 1rem;
     display: flex;

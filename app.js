@@ -6,7 +6,7 @@
 
 const CONFIG = {
     // Replace this with your Google Apps Script Web App URL
-    API_BASE_URL: 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLjRNghDh9nodzMikcZOubxlWudft8grd826chYYhgUgMxJuyY41DTE8sA6jAMW0GtS1EoY5PVLm_ENfVESh8AI_xNWlPngmE8xdb7P8-koZy6cKp0M401dXHf7CXNd2a4SG9vVgIdV1vkbe2PexhLOxxiY0oO_28EfRSguddTtrwJUkSeLvRlXayBe-6uExSu8HrQxIxbZnaAiXNpuMVjJa13ZverMmKPdzr3PMfbY6ZE1mM0IJ3NRmhWc8FVUH6Hlrp-uHf0fKCFmrt3_1zIGXpVuudgdP2pbRR4VHm-9qdobBXHJdaN6-HHvg2A&lib=MVIxilCSL1t1ULljJxlObMipUgJ5-gL--',
+    API_BASE_URL: 'https://script.google.com/macros/s/AKfycbyZK-Aa-VPsXVqiNe5dNdhydmMLjP3ogR7ZNyo9-b5-LzUCJAxHZgF4uuqSeMUP4KHW/exec',
     
     // Cache duration (5 minutes)
     CACHE_DURATION: 5 * 60 * 1000,
@@ -121,16 +121,29 @@ async function loadStats() {
 /**
  * Render overall standings
  */
-function renderStandings(data) {
+function renderStandings(data, selectedWeek = 'current') {
     const tbody = document.getElementById('standings-body');
     tbody.innerHTML = '';
     
-    if (!data || !data.standings || data.standings.length === 0) {
+    if (!data || !data.standingsByWeek) {
         tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">No data available</td></tr>';
         return;
     }
     
-    data.standings.forEach(team => {
+    // Determine which standings to show
+    let standings;
+    if (selectedWeek === 'current') {
+        standings = data.standings;
+    } else {
+        standings = data.standingsByWeek[selectedWeek] || [];
+    }
+    
+    if (standings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">No data for this week</td></tr>';
+        return;
+    }
+    
+    standings.forEach(team => {
         const row = document.createElement('tr');
         
         const rankClass = team.rank <= 3 ? `rank-${team.rank}` : 'rank-other';
@@ -154,8 +167,17 @@ function renderStandings(data) {
     });
     
     // Update header info
+    const displayWeek = selectedWeek === 'current' ? data.currentWeek : selectedWeek;
     document.getElementById('current-week').textContent = data.currentWeek || '-';
     updateLastUpdated(data.lastUpdated);
+    
+    // Update subtitle based on selection
+    const subtitle = document.querySelector('#standings-view .section-subtitle');
+    if (selectedWeek === 'current') {
+        subtitle.textContent = 'Cumulative scores across all competition weeks';
+    } else {
+        subtitle.textContent = `Cumulative scores through Week ${selectedWeek}`;
+    }
 }
 
 /**
@@ -358,7 +380,8 @@ async function switchView(viewName) {
         switch(viewName) {
             case 'standings':
                 const standingsData = await loadStandings();
-                renderStandings(standingsData);
+                const selectedWeek = document.getElementById('standings-week-select').value || 'current';
+                renderStandings(standingsData, selectedWeek);
                 break;
                 
             case 'weekly':
@@ -401,7 +424,7 @@ function initEventListeners() {
         });
     });
     
-    // Week selector
+    // Week selector for weekly results view
     document.getElementById('week-select').addEventListener('change', async (e) => {
         try {
             showLoading();
@@ -410,6 +433,19 @@ function initEventListeners() {
             hideLoading();
         } catch (error) {
             showError('❌ Failed to load weekly results');
+        }
+    });
+    
+    // Week selector for standings view
+    document.getElementById('standings-week-select').addEventListener('change', async (e) => {
+        const selectedWeek = e.target.value;
+        try {
+            showLoading();
+            const standingsData = state.data.standings || await loadStandings();
+            renderStandings(standingsData, selectedWeek);
+            hideLoading();
+        } catch (error) {
+            showError('❌ Failed to load standings');
         }
     });
 }
@@ -433,7 +469,7 @@ async function init() {
     // Set up event listeners
     initEventListeners();
     
-    // Populate week selector
+    // Populate weekly results week selector
     const weekSelect = document.getElementById('week-select');
     weekSelect.innerHTML = '';
     for (let i = 1; i <= CONFIG.TOTAL_WEEKS; i++) {
@@ -443,8 +479,33 @@ async function init() {
         weekSelect.appendChild(option);
     }
     
-    // Load initial view (standings)
-    await switchView('standings');
+    // Load initial view (standings) and populate standings week selector
+    try {
+        showLoading();
+        const standingsData = await loadStandings();
+        
+        // Populate standings week selector based on available data
+        const standingsWeekSelect = document.getElementById('standings-week-select');
+        standingsWeekSelect.innerHTML = '<option value="current">Current (All Weeks)</option>';
+        
+        if (standingsData.totalWeeks) {
+            for (let i = 1; i <= standingsData.totalWeeks; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `After Week ${i}`;
+                standingsWeekSelect.appendChild(option);
+            }
+        }
+        
+        renderStandings(standingsData, 'current');
+        hideLoading();
+        
+        // Show standings view
+        document.getElementById('standings-view').classList.add('active');
+        
+    } catch (error) {
+        showError('❌ Failed to load initial data');
+    }
     
     console.log('BGL Standings initialized!');
 }

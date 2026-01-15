@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGL Standings - Bloomcord Geo League</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">🌍 Bloomcord Geo League</h1>
+                <p class="subtitle">Season 1 • Competition Week <span id="current-week">-</span></p>
+            </div>
+            <div class="last-updated">
+                Last updated: <span id="last-updated">Loading...</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn active" data-view="standings">
+                📊 Standings
+            </button>
+            <button class="nav-btn" data-view="weekly">
+                📅 Weekly Results
+            </button>
+            <button class="nav-btn" data-view="teams">
+                👥 Teams
+            </button>
+            <button class="nav-btn" data-view="stats">
+                📈 Stats
+            </button>
+        </nav>
+
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading league data...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error" class="error" style="display: none;">
+            <p>❌ Failed to load data. Please try again later.</p>
+        </div>
+
+        <!-- Standings View -->
+        <div id="standings-view" class="view active">
+            <div class="section-header">
+                <div class="header-row">
+                    <div>
+                        <h2>Overall Standings</h2>
+                        <p class="section-subtitle">Cumulative scores across all competition weeks</p>
+                    </div>
+                    <div class="week-selector">
+                        <label for="standings-week-select">View as of:</label>
+                        <select id="standings-week-select">
+                            <option value="current">Current (All Weeks)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="standings-table-container">
+                <table class="standings-table" id="standings-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Players</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Weekly Results View -->
+        <div id="weekly-view" class="view">
+            <div class="section-header">
+                <h2>Weekly Results</h2>
+                <div class="week-selector">
+                    <label for="week-select">Competition Week:</label>
+                    <select id="week-select">
+                        <option value="1">Week 1</option>
+                        <option value="2">Week 2</option>
+                        <option value="3">Week 3</option>
+                        <option value="4">Week 4</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="standings-table-container">
+                <table class="standings-table" id="weekly-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Players</th>
+                            <th>Raw Score</th>
+                            <th>Bonus</th>
+                            <th>Final</th>
+                            <th>Cumulative</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weekly-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Teams View -->
+        <div id="teams-view" class="view">
+            <div class="section-header">
+                <h2>Team Roster</h2>
+                <p class="section-subtitle">All competing teams this season</p>
+            </div>
+            
+            <div class="teams-grid" id="teams-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Stats View -->
+        <div id="stats-view" class="view">
+            <div class="section-header">
+                <h2>League Statistics</h2>
+            </div>
+            
+            <div class="stats-grid" id="stats-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by BGL Scoring Automation</p>
+            <p>Data updates automatically after each competition week</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
