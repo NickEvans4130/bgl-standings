@@ -11,6 +11,25 @@ const CONFIG = {
     // Cache duration (5 minutes)
     CACHE_DURATION: 5 * 60 * 1000,
     
+    // Team names keyed by team number
+    TEAM_NAMES: {
+        1: 'Team 1',
+        2: 'Wae2DaMoon',
+        3: 'France Lovers',
+        4: 'Fr*nce Haters',
+        5: 'Seth Trimble Fan Club',
+        6: 'Cutie Patooties',
+        7: 'Team washed',
+        8: 'The Tucumen',
+        9: 'Team 9',
+        10: 'Mapleschmarrn',
+        11: "Andy Cook's barmy army",
+        12: 'Concepcion Pines',
+        13: 'The Dunning\u2013Krugers',
+        14: 'Campinas Enjoyers',
+        15: 'Team 15'
+    },
+
     // League settings
     TOTAL_WEEKS: 4,
     
@@ -48,6 +67,14 @@ const CONFIG = {
         ]
     }
 };
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+
+function getTeamName(teamNumber) {
+    return CONFIG.TEAM_NAMES[teamNumber] || `Team ${teamNumber}`;
+}
 
 // ============================================================================
 // STATE MANAGEMENT
@@ -187,7 +214,7 @@ function renderStandings(data, selectedWeek = 'current') {
                 <div class="rank-badge ${rankClass}">${team.rank}</div>
             </td>
             <td>
-                <div class="team-name">Team ${team.teamNumber}</div>
+                <div class="team-name">${getTeamName(team.teamNumber)}</div>
             </td>
             <td>
                 <div class="players">${team.player1} & ${team.player2}</div>
@@ -237,7 +264,7 @@ function renderWeeklyResults(data) {
                 <div class="rank-badge ${rankClass}">${team.rank}</div>
             </td>
             <td>
-                <div class="team-name">Team ${team.teamNumber}</div>
+                <div class="team-name">${getTeamName(team.teamNumber)}</div>
             </td>
             <td>
                 <div class="players">${team.player1} & ${team.player2}</div>
@@ -271,7 +298,7 @@ function renderTeams(data) {
         card.innerHTML = `
             <div class="team-card-header">
                 <div class="team-number">${team.teamNumber}</div>
-                <h3>Team ${team.teamNumber}</h3>
+                <h3>${getTeamName(team.teamNumber)}</h3>
             </div>
             <div class="team-card-players">
                 <div class="player-item">
@@ -305,7 +332,7 @@ function renderStats(data) {
         { label: 'Total Teams', value: data.totalTeams },
         { label: 'Total Players', value: data.totalPlayers },
         { label: 'Current Week', value: data.currentWeek },
-        { label: 'Leading Team', value: data.leaderTeam ? `Team ${data.leaderTeam.teamNumber}` : '-' }
+        { label: 'Leading Team', value: data.leaderTeam ? getTeamName(data.leaderTeam.teamNumber) : '-' }
     ];
     
     stats.forEach(stat => {
