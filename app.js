@@ -23,7 +23,7 @@ const CONFIG = {
         8: 'The Tucumen',
         9: 'Team 9',
         10: 'Mapleschmarrn',
-        11: "Andy Cook's barmy army",
+        11: "cold white boys",
         12: 'Concepcion Pines',
         13: 'The Dunning\u2013Krugers',
         14: 'Campinas Enjoyers',
