@@ -5,8 +5,8 @@
 // ============================================================================
 
 const CONFIG = {
-    // Replace this with your Google Apps Script Web App URL
-    API_BASE_URL: 'https://script.google.com/macros/s/AKfycbyZK-Aa-VPsXVqiNe5dNdhydmMLjP3ogR7ZNyo9-b5-LzUCJAxHZgF4uuqSeMUP4KHW/exec',
+    // Google Apps Script Web App URL
+    API_BASE_URL: 'https://script.google.com/macros/s/AKfycbyMgMkbGbQyjVz06qHMe3MK8xvsyo3qXiQI_sMrF0BozVJFGZWPNx9p_3UENiHjzYdCDA/exec',
     
     // Cache duration (5 minutes)
     CACHE_DURATION: 5 * 60 * 1000,
@@ -25,7 +25,7 @@ const CONFIG = {
         10: 'Mapleschmarrn',
         11: "cold white boys",
         12: 'Concepcion Pines',
-        13: 'The Dunning\u2013Krugers',
+        13: 'The Dunning–Krugers',
         14: 'Campinas Enjoyers',
         15: 'Team 15'
     },
@@ -108,16 +108,20 @@ async function fetchData(endpoint, params = {}) {
         return cached.data;
     }
     
-    // Build URL
+    // Build URL - use action parameter instead of endpoint
     const url = new URL(CONFIG.API_BASE_URL);
-    url.searchParams.set('endpoint', endpoint);
+    url.searchParams.set('action', endpoint);
     Object.entries(params).forEach(([key, value]) => {
         url.searchParams.set(key, value);
     });
     
     try {
         console.log(`Fetching ${endpoint}...`);
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            redirect: 'follow',  // Follow Google Apps Script redirects
+            mode: 'cors'
+        });
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -602,12 +606,6 @@ function initEventListeners() {
  */
 async function init() {
     console.log('Initializing BGL Standings...');
-    
-    // Check if API URL is configured
-    if (CONFIG.API_BASE_URL.includes('YOUR_DEPLOYMENT_ID')) {
-        showError('⚠️ API not configured. Please update CONFIG.API_BASE_URL in app.js');
-        return;
-    }
     
     // Update season status
     updateSeasonStatus();
