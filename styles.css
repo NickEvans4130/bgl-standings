@@ -490,6 +490,137 @@ body {
     }
 }
 
+/* Off-season page */
+.offseason-banner {
+    text-align: center;
+    padding: 3rem 2rem 2rem;
+}
+
+.offseason-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--bronze) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+}
+
+.offseason-sub {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+}
+
+.podium-section {
+    margin-top: 2rem;
+}
+
+.podium-heading {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 3rem;
+    color: var(--text-dim);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.podium-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.podium-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 240px;
+}
+
+.podium-info {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--bg-light);
+    border: 2px solid var(--border);
+    border-radius: 0.75rem;
+    width: 100%;
+}
+
+.podium-team {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+}
+
+.podium-players {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.podium-score {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.podium-block {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.podium-block.gold {
+    height: 160px;
+    background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+}
+
+.podium-block.silver {
+    height: 110px;
+    background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+}
+
+.podium-block.bronze {
+    height: 80px;
+    background: linear-gradient(180deg, #fb923c 0%, #ea580c 100%);
+}
+
+.podium-rank {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 600px) {
+    .offseason-title {
+        font-size: 1.8rem;
+    }
+
+    .podium-wrapper {
+        gap: 0.25rem;
+    }
+
+    .podium-info {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .podium-team {
+        font-size: 0.85rem;
+    }
+
+    .podium-block.gold  { height: 120px; }
+    .podium-block.silver { height: 85px; }
+    .podium-block.bronze { height: 60px; }
+}
+
 /* Animations */
 @keyframes slideIn {
     from {

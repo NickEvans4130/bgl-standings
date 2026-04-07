@@ -11,6 +11,9 @@ const CONFIG = {
     // Cache duration (5 minutes)
     CACHE_DURATION: 5 * 60 * 1000,
     
+    // Set to true to show the off-season page instead of live standings
+    OFFSEASON_MODE: true,
+
     // Team names keyed by team number
     TEAM_NAMES: {
         1: 'Team 1',
@@ -606,7 +609,16 @@ function initEventListeners() {
  */
 async function init() {
     console.log('Initializing BGL Standings...');
-    
+
+    // Off-season mode: skip live data and show static page
+    if (CONFIG.OFFSEASON_MODE) {
+        document.querySelector('.nav').style.display = 'none';
+        document.getElementById('offseason-view').classList.add('active');
+        document.querySelector('.last-updated').style.display = 'none';
+        document.getElementById('season-status').style.display = 'none';
+        return;
+    }
+
     // Update season status
     updateSeasonStatus();
     
